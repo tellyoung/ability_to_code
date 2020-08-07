@@ -257,6 +257,8 @@ False
 >>> cop2
 [1, 2, [3, 4]]
 #把origin内的子list [3, 4] 改掉了一个元素，观察 cop1 和 cop2
+
+copy.deepcopy(head) # 深拷贝复杂链表
 ```
 
 4. 变量作用域
@@ -272,7 +274,9 @@ B （Built-in） 内建作用域
 	- global 和 globals() 是不同的，global 是关键字用来声明一个局部变量为全局变量
 	- globals() 和 locals() 提供了基于字典的访问全局和局部变量的方式
 
+5. 递归中传参 list
 
+   参数 list 传入的是地址，当后续 list 发生改变时，会影响上一阶段的结果
 
 
 
@@ -284,6 +288,19 @@ B （Built-in） 内建作用域
 
 ## 基本语法
 ```python
+# 嵌套函数中声明全局变量
+def func():
+    x = 2
+    def funck():
+        nonlocal x
+		print(x)
+        
+# 普通函数中声明全局变量        
+x = 1        
+def func():
+    global x
+    print(x)
+    
 # 一行写不下在行末尾加 \
 
 left + (right - left) // 2 # 防溢出
@@ -293,10 +310,15 @@ not None, not False, not True
 
 9 // 2 = 4
 9 / 2 = 4.5 
+5 % 2   # 1
+1e5 = 100000.0
 
 and，or则依据是否非0来决定输出
 and中含0，返回0； 均为非0时，返回后一个值
 or中， 至少有一个非0时，返回第一个非0
+
+# print的返回值 == None
+# 对于所有没有return的函数，自动加上 return None
 ```
 - format
 
@@ -352,10 +374,14 @@ l.index(values) # 返回在数组中的位置
 ```python
 l.sort()              # 默认升序 修改原数组l
 l.sort(reverse=True)  # 降序
-
+l.sort(key=)          # key=len
 new_list = sorted(l) # 生成新数组
 
 [str(i) for i in l]  # list内元素 int 转 str
+
+l.count(num) # 返回 num 在数组中的出现次数
+
+list(reversed(range(10)))  # 倒序9-0
 ```
 ## string
 - 定义
@@ -394,6 +420,7 @@ s.isdigit() # 是否是数字
 s.isalpha() # 是否是字母 
 
 s.upper()   # 转换为大写
+s.lower()
 s.title()   # 首字母大写
 
 s.count('s') # 's'出现次数
@@ -401,6 +428,9 @@ s.count('s') # 's'出现次数
 s.replace('s', 'S') # 'String' 
 s.replace('s', '')  # 'tring'
 s.replace(' ', '%20') # 字符串中的空格用%20替换
+
+s.split()     # 去除前后空格
+s.split('s')  # 以字符‘s’隔开字符串
 ```
 
 
@@ -433,7 +463,13 @@ d.values()
 
 - tips
 ```python
-for i in d: # i 表示 d.keys
+for key in d: # i 表示 d.keys
+for key in d.key():
+for key, item in d.items():
+
+# 字典排序    
+sorted(d.items(), key=lambda x: x[1], reverse=True) # 翻转 降序
+sorted(d.items(), key=lambda x: x[1], reverse=False)# 升序
 ```
 
 ## set
@@ -527,6 +563,26 @@ import collections
 collections.Counter('dssf')
 Counter({'d': 1, 's': 2, 'f': 1})
 
+collections.Counter([2,2,1,1,1,2,2]) # Counter({2: 4, 1: 3}) 字典类型
+
+------------------------
+from collections import deque
+q = deque()
+q = deque([1,2,3], maxlen=2) # 由一个可迭代对象，一个最大规模组成
+# 结果是deque([2, 3])，首先1进队，然后2进队，最后3进队，数据溢出，1消失
+
+q = collections.deque([])
+q.append('a')                   # 在最右边添加一个元素，此时 q=deque('a')
+q.appendleft('b')               # 在最左边添加一个元素，此时 d=deque(['b', 'a'])
+q.extend(['c','d'])     # 在最右边添加所有元素，此时 d=deque(['b', 'a', 'c', 'd'])
+q.extendleft(['e','f']) # 在最左边添加所有元素，此时 d=deque(['f', 'e', 'b', 'a', 'c', 'd'])
+q.pop()      # 将最右边的元素取出，返回 'd'，此时 d=deque(['f', 'e', 'b', 'a', 'c'])
+q.popleft()  # 将最左边的元素取出，返回 'f'，此时 d=deque(['e', 'b', 'a', 'c'])
+q.rotate(-2) # 向左旋转两个位置（正数则向右旋转），此时 d=deque(['a', 'c', 'e', 'b'])
+q.count('a') # 队列中'a'的个数，返回 1
+q.remove('c')   # 从队列中将'c'删除，此时 d=deque(['a', 'e', 'b'])
+q.reverse()     # 将队列倒序，此时 d=deque(['b', 'e', 'a'])
+
 ```
 
 ## enumerate
@@ -535,9 +591,37 @@ for index, value in enumerate(a_list):     # 枚举
     mapping[value] = index                 # mapping = {}
 ```
 
+## zip
+```python
+l1=[3,4,5]
+l2=[1,6,7]
+zipped=zip(l1, l2)
+print(*zipped)          # (3, 1) (4, 6) (5, 7)
 
+```
 
 ## 调试
+
+## 输入输出
+```python
+a, b = input("请输入一个数字：")   # python输入 默认str类型 23 -> '2','3'
+str = input() # 'a b cde'
+
+strlist = input().split(' ')	 # ['a', 'b', 'cde']
+str1, str2 = input().split(' ')  # 输入两个字符串，使用空格分隔输入
+
+int_num = int(input()) # 输入一个数 转int
+int_list = list(map(int, input().split(' '))) # 输入数字 空格作为分隔  
+
+print('the x is : {}'.format(x))
+print('{0}: {1}, {2}'.format(x, a, b))
+print('{0:.2f} {1:s} are worth US${2:d}'.format(4.56, 'abc', 1))    # .2f 保留两位小数
+
+print('i am yuty', num)
+print(a, end = ' ')
+
+```
+
 
 # 数据结构
 
@@ -569,30 +653,11 @@ def find_mid(head):
 
 dir(deque)查看deque的方法
 ```python
-from collections import deque
-# 底层据说也是同样用双链表实现的
-q = deque()
-q = deque([1,2,3], maxlen=2) # 由一个可迭代对象，一个最大规模组成
-# 结果是deque([2, 3])，首先1进队，然后2进队，最后3进队，数据溢出，1消失
 
-append       # 同list的append，在队尾加入一个元素
-appendleft   # 在队首加入一个元素
-pop          # 队尾元素删去
-popleft      # 队头元素删去
-clear        # 清空队列
-copy         # 浅拷贝，b=a.copy() 浅拷贝复制的是引用，深拷贝的话复制的是不可变元素的引用和可变元素的复制
-count:  q.count(1)     # a中1的数量
-entend       # 参数是一个可迭代变量，在右端按照迭代顺序添加
-extendleft   # 同上，不过是在左端按照迭代顺序添加 
-# q.extendleft([2, 3, 4]) -> deque([4, 3, 2])
-index        # 和list的相类似，用于找出某个值第一个匹配项的索引位置
-insert       # 和list的相同，插入元素insert(index, val)，在index前插入元素，如果index超过长度就会插到最后
-remove       # 同list, q.remove(val)用于移除列表中某个值的第一个匹配项。
-reverse      # 倒序
-rotate       # 循环移动，为正全体右移，为负全体左移
 ```
 
 ## 堆
+利用heapq实现最小堆
 ```python
 heapq # 最小堆
 import heapq
@@ -611,6 +676,16 @@ for i in heapq.merge(heap1, heap2):
 heapq.nlargest(n, heap)   # n个最大元素 
 heapq.nsmallest(n, heap)  # n个最小元素
 ```
+
+
+
+
+
+
+
+
+
+
 
 
 
