@@ -284,7 +284,34 @@ B （Built-in） 内建作用域
 最小值：Integer.MIN_VALUE= -2147483648 （-2的31次方）
 最大值：Integer.MAX_VALUE= 2147483647  （2的31次方-1）
 
+## 函数
 
+##### 1. *args,  **kwargs
+
+![img](Road.assets/v2-48a5aab6bbc6a5b4e2cfe04e57a544d4_720w.jpg)
+
+## 二进制转化
+```python 
+bin(5)  # int 转二进制 0b101
+
+print("{:04b}".format(4)) # 0100
+
+>>> x = 1234
+>>> bin(x)
+'0b10011010010'
+>>> oct(x)
+'0o2322'
+>>> hex(x)
+'0x4d2'
+
+>>> int('1101',2)  
+13
+>>> int('0o226',8)   #00226 0：阿拉伯数字零   o：小写英文字母 o    226：八进制数
+150
+>>> int('0x96',16)
+150
+
+```
 
 ## 基本语法
 ```python
@@ -350,8 +377,10 @@ l.extend([a, b, c])  # 添加a, b, c加入l
 
 - 删除
 ```python
-l.pop(0)      # 弹出0号位置 
-l.remove('x') # 删除指定元素
+l.pop(0)      # 弹出0号位置 按索引删除 
+l.remove('x') # 按值删除
+del l[2:4] 	  # 删除指定范围
+del l[2]
 
 # 循环中删除指定元素
 idx = 0 
@@ -375,6 +404,7 @@ l.index(values) # 返回在数组中的位置
 l.sort()              # 默认升序 修改原数组l
 l.sort(reverse=True)  # 降序
 l.sort(key=)          # key=len
+
 new_list = sorted(l) # 生成新数组
 
 [str(i) for i in l]  # list内元素 int 转 str
@@ -382,7 +412,44 @@ new_list = sorted(l) # 生成新数组
 l.count(num) # 返回 num 在数组中的出现次数
 
 list(reversed(range(10)))  # 倒序9-0
+l.reverse()
 ```
+## tuple
+
+```python
+tuple1=('两点水','twowter','liangdianshui',[123,456])
+print(tuple1)
+del tuple1
+
+len(tuple)	计算元组元素个数
+max(tuple)	返回元组中元素最大值
+min(tuple)	返回元组中元素最小值
+tuple(seq)	将列表转换为元组
+
+name1 = ('一点水', '两点水', '三点水', '四点水', '五点水')
+
+name2 = ('1点水', '2点水', '3点水', '4点水', '5点水')
+
+list1 = [1, 2, 3, 4, 5]
+
+# 计算元素个数
+print(len(name1))
+# 连接,两个元组相加
+print(name1 + name2)
+# 复制元组
+print(name1 * 2)
+# 元素是否存在 (name1 这个元组中是否含有一点水这个元素)
+print('一点水' in name1)
+# 元素的最大值
+print(max(name2))
+# 元素的最小值
+print(min(name2))
+# 将列表转换为元组
+print(tuple(list1))
+```
+
+
+
 ## string
 - 定义
 ```python
@@ -394,10 +461,15 @@ s = "string"
 
 - 拼接
 ```python
+# str -> str
 s = "00000003210Runoob01230000000"; 
-s.strip( '0' )   # 去除首尾字符 0
-" a b c  ".strip() #  去掉头尾空格"a b c"
-"a/b/c".split("/") # 以"/"分离 ['a', 'b', 'c']
+s.strip( '0' )     # 去除首尾字符 0
+" a b c  ".strip() # 去掉头尾空格"a b c"
+
+# str -> list
+"a/b/c".split("/")        # 以"/"分离 ['a', 'b', 'c']
+
+# list -> str
 "/".join(["a", "b", "c"]) # "a/b/c"
 "".join(["a", "b", "c"])  # "abc" 
 ```
@@ -429,8 +501,14 @@ s.replace('s', 'S') # 'String'
 s.replace('s', '')  # 'tring'
 s.replace(' ', '%20') # 字符串中的空格用%20替换
 
-s.split()     # 去除前后空格
-s.split('s')  # 以字符‘s’隔开字符串
+s.split()     # 去除前后空格         ' abc  ' -> ['abc']
+s.split('b')  # 以字符'b'隔开字符串   ' abc  ' -> ['a', 'c']
+
+list('abcd')
+['a', 'b', 'c', 'd']
+
+ord('z')  # 122
+chr(122)  # 'z'
 ```
 
 
@@ -470,6 +548,9 @@ for key, item in d.items():
 # 字典排序    
 sorted(d.items(), key=lambda x: x[1], reverse=True) # 翻转 降序
 sorted(d.items(), key=lambda x: x[1], reverse=False)# 升序
+
+sorted(dic) # 按key排序
+
 ```
 
 ## set
@@ -507,6 +588,8 @@ s2.intersection(s2) 	# 返回交集 s1 & s2
 s1.issubset(s2) 		# s1是否是s2的子集
 
 s1 = s1 - s2
+
+s_ = sorted(s)
 ```
 ## 切换
 ```python
@@ -593,11 +676,16 @@ for index, value in enumerate(a_list):     # 枚举
 
 ## zip
 ```python
-l1=[3,4,5]
-l2=[1,6,7]
-zipped=zip(l1, l2)
+l1=[3, 4, 5]
+l2=[1, 6, 7]
+zipped = zip(l1, l2)    # 压缩
 print(*zipped)          # (3, 1) (4, 6) (5, 7)
+print(list(zipped))
 
+l1, l2 = zip(*zip(l1, l2))  # 解压
+l1, l2 = zip(*zipped)
+l1 = [3, 4, 5]
+l2 = [1, 6, 7]
 ```
 
 ## 调试
@@ -620,6 +708,8 @@ print('{0:.2f} {1:s} are worth US${2:d}'.format(4.56, 'abc', 1))    # .2f 保留
 print('i am yuty', num)
 print(a, end = ' ')
 
+print("%.2f"%(num))    # 保留两位小数
+print((round(num, 2))) # 保留两位小数
 ```
 
 
@@ -827,8 +917,8 @@ a ^ b    # 异或操作 (相同的两个数字异或，值为0)
 a & b    # 与操作 , 如果是偶数，n&1返回0；否则返回1，为奇数
 a << 1   # 二进制左移一位 相当于乘2
 a >> 1   # 二进制右移一位 相当于除以2,向下取整
-(a + b) >> 1        # 向下取整
-(a + b + 1) >> 1    # 向上取整
+(a + b) >> 1        # 除2向下取整
+(a + b + 1) >> 1    # 除2向上取整
 ```
 
 
@@ -836,8 +926,19 @@ a >> 1   # 二进制右移一位 相当于除以2,向下取整
 ![img](https://user-gold-cdn.xitu.io/2020/5/18/17226641e33cf0db?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 >递归无非就是把问题拆解成具有相同解决思路的子问题，直到最后被拆解的子问题不能够拆分，这个过程是“递”。当解决了最小粒度可求解的子问题后，在“归”的过程中顺其自然的解决了最开始的问题。
 
-
 # 分治
+
+### 背包问题
+
+1. 01背包问题
+2. 完全背包问题
+3. 多重背包问题
+4. 混合背包问题
+5. 二维费用的背包问题
+6. 分组背包问题
+7. 背包问题求方案数
+8. 求背包问题方案
+9. 有依赖的背包问题
 
 
 # 贪心
@@ -886,7 +987,7 @@ https://leetcode-cn.com/problems/search-insert-position/solution/te-bie-hao-yong
         def base_search(self, nums, target) -> int:
             '''
                 实现一个基础二分查找
-                输入:一个顺序list
+                输入: 一个顺序list
                 输出: 待查找的元素的位置
             '''
             left, right = 0, len(nums) - 1
@@ -903,6 +1004,7 @@ https://leetcode-cn.com/problems/search-insert-position/solution/te-bie-hao-yong
 	
 		def left_search(nums, target):
 			'''
+				存在多个相同数字
 				左边界
 			'''
             left, right = 0, len(nums) - 1
@@ -1014,6 +1116,15 @@ LeetCode 207, 210
 
 ```
 
+# 数学
+
+### 质数
+
+只能被1和它本身整除
+
+```python
+
+```
 
 
 
