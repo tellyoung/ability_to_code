@@ -713,6 +713,11 @@ print((round(num, 2))) # 保留两位小数
 ```
 
 
+
+## 进程与线程
+
+
+
 # 数据结构
 
 ## 链表
@@ -803,7 +808,10 @@ root.right = node_right
 - 第一步: 就是左子树的right 指向右子树
 - 第二步: 就是root的right指向左子树, 这里有个trick就是利用pre指针
 
-数学归纳法就是:
+
+
+平衡二叉树、B树、B+树、B*树 
+https://zhuanlan.zhihu.com/p/27700617
 
 
 
@@ -868,7 +876,9 @@ root.right = node_right
 
 ## hash
 
+1. hash
 
+  装填因子a=元素个数/hash表长
 
 
 # 排序
@@ -925,6 +935,26 @@ a >> 1   # 二进制右移一位 相当于除以2,向下取整
 # 递归
 ![img](https://user-gold-cdn.xitu.io/2020/5/18/17226641e33cf0db?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)
 >递归无非就是把问题拆解成具有相同解决思路的子问题，直到最后被拆解的子问题不能够拆分，这个过程是“递”。当解决了最小粒度可求解的子问题后，在“归”的过程中顺其自然的解决了最开始的问题。
+
+记忆化递归
+LeetCode120
+```python
+class Solution:
+    def minimumTotal(self, triangle: List[List[int]]) -> int:
+        n = len(triangle)
+        # @lru_cache()
+        def dfs(idx, j):
+            if idx == n:
+                return 0
+            memo = min(dfs(idx + 1, j), dfs(idx + 1, j + 1)) + triangle[idx][j]           
+            return memo
+        return dfs(0, 0)
+
+```
+
+
+
+
 
 # 分治
 

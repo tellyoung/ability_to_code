@@ -1,19 +1,29 @@
-n = 3
+n, m = map(int, input().split())
+nums = []
+for i in range(n):
+    num = list(map(int, input().split()))
+    nums.append(num)
 
-nums = [[1], [2, 4,5], [3, 6, 7, 8, 9]]
+used = set()
+maxn = 0
+
+def dfs(i, j):
+    global maxn
+    # print(len(used))
+    if maxn < len(used):
+        maxn = len(used)
+
+    for x in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
+        tmp = (i + x[0], j + x[1])
+        if tmp[0] >= n or tmp[0] < 0 or tmp[1] < 0 or tmp[1] >= m:
+            continue
+        if tmp not in used and nums[tmp[0]][tmp[1]] < nums[i][j]:
+            used.add(tmp)
+            dfs(i + x[0], j + x[1])
+            used.discard(tmp)
 
 for i in range(n):
-    tmp = [0] * (n-1-i)
-    nums[i] = tmp + nums[i] + tmp
-print(nums)
+    for j in range(m):
+        dfs(i, j)
 
-for i in range(1, n):
-    for j in range(len(nums[i])):
-        if j == 0:
-            nums[i][j] = nums[i][j] + max(nums[i-1][:2])
-        elif j == len(nums[i])-1:
-            nums[i][j] = nums[i][j] + max(nums[i - 1][-2:])
-        else:
-            nums[i][j] = nums[i][j] + max(nums[i - 1][j-1:j+2])
-print(nums)
-print(max(nums[0][1:4]))
+print(maxn + 1)
