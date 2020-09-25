@@ -1,29 +1,28 @@
-n, m = map(int, input().split())
-nums = []
-for i in range(n):
-    num = list(map(int, input().split()))
-    nums.append(num)
+nums = [5,6,1,1,1,2,2,3,1]
+dic = {}
+for n in nums:
+    if n not in dic:
+        dic[n] = 1
+    else:
+        dic[n] += 1
+dic[5] = [3,6,7]
+print(dic)
+print(dic.items())
+print(sorted(dic.items(), key=lambda x: x[0]))
+dic = sorted(dic)
+print(dic)
 
-used = set()
-maxn = 0
+class ListNode:
+    def __init__(self, x):
+        self.val = x
+        self.next = None
 
-def dfs(i, j):
-    global maxn
-    # print(len(used))
-    if maxn < len(used):
-        maxn = len(used)
-
-    for x in [[-1, 0], [1, 0], [0, -1], [0, 1]]:
-        tmp = (i + x[0], j + x[1])
-        if tmp[0] >= n or tmp[0] < 0 or tmp[1] < 0 or tmp[1] >= m:
-            continue
-        if tmp not in used and nums[tmp[0]][tmp[1]] < nums[i][j]:
-            used.add(tmp)
-            dfs(i + x[0], j + x[1])
-            used.discard(tmp)
-
-for i in range(n):
-    for j in range(m):
-        dfs(i, j)
-
-print(maxn + 1)
+def ReverseList(pHead):
+    l, r = pHead, pHead.next
+    while r:
+        tmp = r.next
+        r.next = l
+        if l == pHead:
+            l.next = None
+        l, r = r, tmp
+    return l

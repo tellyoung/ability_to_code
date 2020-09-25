@@ -546,15 +546,18 @@ for key in d.key():
 for key, item in d.items():
 
 # 字典排序    
-sorted(d.items(), key=lambda x: x[1], reverse=True) # 翻转 降序
+sorted(d.items(), key=lambda x: x[1], reverse=True) # 按 value 排序 降序
 sorted(d.items(), key=lambda x: x[1], reverse=False)# 升序
 
 sorted(dic) # 按key排序
-
+dic = {5: 1, 6: 1, 1: 4, 2: 2, 3: 1}
+sorted(dic) = [1, 2, 3, 5, 6]
 ```
 
 ## set
 >去重
+>
+>只有tuple和string是可hashable的
 - 定义
 ```python
 s = set()
@@ -567,6 +570,7 @@ s = {(i, j)} # (i, j) 为一个单元
 - 添加
 ```python
 s.add((ix, jx)) # 添加一个单元(ix, jx)
+s.add(tuple(sorted(used)))
 ```
 
 - 删除
@@ -659,12 +663,20 @@ q.append('a')                   # 在最右边添加一个元素，此时 q=dequ
 q.appendleft('b')               # 在最左边添加一个元素，此时 d=deque(['b', 'a'])
 q.extend(['c','d'])     # 在最右边添加所有元素，此时 d=deque(['b', 'a', 'c', 'd'])
 q.extendleft(['e','f']) # 在最左边添加所有元素，此时 d=deque(['f', 'e', 'b', 'a', 'c', 'd'])
-q.pop()      # 将最右边的元素取出，返回 'd'，此时 d=deque(['f', 'e', 'b', 'a', 'c'])
+q.pop()      		    # 将最右边的元素取出，返回 'd'，此时 d=deque(['f', 'e', 'b', 'a', 'c'])
 q.popleft()  # 将最左边的元素取出，返回 'f'，此时 d=deque(['e', 'b', 'a', 'c'])
 q.rotate(-2) # 向左旋转两个位置（正数则向右旋转），此时 d=deque(['a', 'c', 'e', 'b'])
 q.count('a') # 队列中'a'的个数，返回 1
 q.remove('c')   # 从队列中将'c'删除，此时 d=deque(['a', 'e', 'b'])
 q.reverse()     # 将队列倒序，此时 d=deque(['b', 'e', 'a'])
+
+----------------------
+dic = {}                        # 内部顺序与传入无关
+
+import collections
+dic = collections.OrderedDict() # 内部顺序与传入顺序有关
+val = dic.pop(key)
+dic.popitem(last=False) 	    # 删除最早传入的key
 
 ```
 
@@ -872,6 +884,17 @@ https://zhuanlan.zhihu.com/p/27700617
    当前图中不存在无前驱的顶点, 说明有向图中必然存在环。
 
 ![img](https://upload-images.jianshu.io/upload_images/8468731-da38fa971e5d52b5.png?imageMogr2/auto-orient/strip|imageView2/2/w/544/format/webp)
+
+### 图遍历
+
+1. 广度优先搜索和深度优先搜索
+
+```python
+def bfs
+
+
+
+```
 
 
 ## hash
@@ -1176,8 +1199,100 @@ LeetCode 207, 210
 - 并查集
 
 
+## LRU
+```python
+class LinkedNode:
+    def __init__(self, key, value):
+        self.value = value
+        self.key = key
+        self.per = None
+        self.next = None
 
- 
+# --------------------------
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.dic = {}
+        self.capacity = capacity
+        self.head = LinkedNode(-1, -1)
+        self.tail = LinkedNode(-1, -1)
+        self.head.next = self.tail
+        self.tail.pre = self.head
+
+    def get(self, key: int) -> int: # 得到数据
+        if key not in self.dic:
+            return -1
+        else:
+            node = self.dic[key]
+            self.removeNode(node)
+            self.insertHead(node)
+            return node.value
+
+    def put(self, key: int, value: int) -> None: # 写入数据
+        if key in self.dic:
+            node = self.dic[key]
+            node.value = value
+            self.removeNode(node)
+            self.insertHead(node)
+        else:
+            node = LinkedNode(key, value)
+            print(len(self.dic), self.capacity)
+            if len(self.dic) == self.capacity:
+                removed = self.tail.pre
+                self.dic.pop(removed.key)
+                self.removeNode(removed)
+            self.dic[key] = node
+            self.insertHead(node)
+    
+    def removeNode(self, node):
+        node.pre.next = node.next
+        node.next.pre = node.pre
+    
+    def insertHead(self, node):
+        node.next = self.head.next
+        node.pre = self.head
+        self.head.next.pre = node
+        self.head.next = node
+
+
+# Your LRUCache object will be instantiated and called as such:
+# obj = LRUCache(capacity)
+# param_1 = obj.get(key)
+# obj.put(key,value)
+```
+
+
+```python
+import collections
+
+class LRUCache:
+
+    def __init__(self, capacity: int):
+        self.hashmap = collections.OrderedDict()
+        self.capacity = capacity
+
+    def get(self, key: int) -> int:
+        if key not in self.hashmap:
+            return -1
+        else:
+            val = self.hashmap.pop(key)
+            self.hashmap[key] = val
+            return val
+
+    def put(self, key: int, value: int) -> None:
+        if key not in self.hashmap:
+            if len(self.hashmap) >= self.capacity:
+                self.hashmap.popitem(last=False)
+            self.hashmap[key] = value
+        else:
+            val = self.hashmap.pop(key)
+            self.hashmap[key] = value
+            
+            
+```
+
+
 
 # Git
 ```shell
