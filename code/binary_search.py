@@ -20,9 +20,6 @@ class Solution:
     def left_search(self, nums, target):
         '''
         查找左边界
-        :param nums: list
-        :param target: int
-        :return: index
         '''
         if not nums: return -1
         left, right = 0, len(nums) - 1

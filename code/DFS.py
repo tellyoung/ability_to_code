@@ -126,8 +126,6 @@ class Solution:
         return False
 
 
-
-
 if __name__ == "__main__":
     test = Solution()
     test.nums = [1, 2, 3]
